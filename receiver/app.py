@@ -30,10 +30,9 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-
-SERVER = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
-CLIENT = KafkaClient(hosts=SERVER)
-TOPIC = CLIENT.topics[str.encode(app_config["events"]["topic"])]
+server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
+client = KafkaClient(hosts=server)
+TOPIC = client.topics[str.encode(app_config["events"]["topic"])]
 
 
 def purchase_item(body):
