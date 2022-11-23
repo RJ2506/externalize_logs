@@ -29,11 +29,16 @@ with open(log_conf_file, 'r') as f:
 logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
+count = 0
 
-server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
-client = KafkaClient(hosts=server)
-TOPIC = client.topics[str.encode(app_config["events"]["topic"])]
-
+while count < app_config["log"]["max_retry"]:
+    try:
+        server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
+        client = KafkaClient(hosts=server)
+        TOPIC = client.topics[str.encode(app_config["events"]["topic"])]
+    except:
+        logger.error('connection lost')
+        count += 1
 
 def purchase_item(body):
     """purchase the item you selected"""
