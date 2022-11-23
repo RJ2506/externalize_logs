@@ -69,7 +69,6 @@ def get_stats():
     """get the stats from storage application"""
     session = DB_SESSION()
     time = datetime.datetime.now()
-    create_table()
     readings = session.query(Stats).order_by(Stats.last_updated.desc()).first()
     
     if readings == None:
@@ -88,6 +87,7 @@ def populate_stats():
     """ periodically update stats """
     session = DB_SESSION()
     time = datetime.datetime.now()
+    create_table()
     result = session.query(Stats).order_by(Stats.last_updated.desc()).first()
     print(result.to_dict())
 
