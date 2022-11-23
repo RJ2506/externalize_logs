@@ -110,15 +110,15 @@ def populate_stats():
             print(item['price'])
             buy_price.append(float(item['price']))
             
-        if len(buy_price) != 0:
-            max_buy = max(buy_price)
-            min_buy = min(buy_price)
-        else:
-            max_buy = 0
-            min_buy = 0
+        # if len(buy_price) != 0:
+        #     max_buy = max(buy_price)
+        #     min_buy = min(buy_price)
+        # else:
+        #     max_buy = 0
+        #     min_buy = 0
 
-        if max_buy < result.max_buy_reading:
-            max_buy = result.max_buy_reading
+        # if max_buy < result.max_buy_reading:
+        #     max_buy = result.max_buy_reading
         
         res_search = requests.get(
             app_config['eventstore']['url'] + "/" + "search" + "?start_timestamp=" + last_updated_format + "&end_timestamp=" + current_time_format
@@ -130,25 +130,34 @@ def populate_stats():
             search_price.append(float(item['price']))
             
         
-        if len(search_price) != 0:
-            max_search = max(search_price)
-            min_search = min(search_price)
-        else:
-            max_search = 0
-            min_search = 0
+        # if len(search_price) != 0:
+        #     max_search = max(search_price)
+        #     min_search = min(search_price)
+        # else:
+        #     max_search = 0
+        #     min_search = 0
 
-        if max_search < result.max_search_reading:
-            max_search = result.max_search_reading
+        # if max_search < result.max_search_reading:
+        #     max_search = result.max_search_reading
     
 
+        # bs = Stats(
+        #     result.num_buy_readings + len(buy_price),
+        #     result.num_search_readings + len(search_price),
+        #     max_buy,
+        #     max_search,
+        #     min_buy,
+        #     min_search,
+        #     time
+        # )
         bs = Stats(
-            result.num_buy_readings + len(buy_price),
-            result.num_search_readings + len(search_price),
-            max_buy,
-            max_search,
-            min_buy,
-            min_search,
-            time
+        len(buy_price),
+        len(search_price),
+        max(buy_price),
+        max(search_price),
+        min(buy_price),
+        min(search_price),
+        time
         )
         
         session.add(bs)
