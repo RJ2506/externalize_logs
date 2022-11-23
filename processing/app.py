@@ -48,7 +48,7 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 def create_table():
     """create the table if it doesn't exist"""
-    conn = sqlite3.connect('stats.sqlite')
+    conn = sqlite3.connect(app_config['datastore']['filename'])
     c = conn.cursor()
     c.execute('''
         CREATE TABLE if not exists stats
