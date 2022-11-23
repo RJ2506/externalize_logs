@@ -31,9 +31,9 @@ logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
 
-server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
-client = KafkaClient(hosts=server)
-topic = client.topics[str.encode(app_config["events"]["topic"])]
+SERVER = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
+CLIENT = KafkaClient(hosts=server)
+TOPIC = client.topics[str.encode(app_config["events"]["topic"])]
 
 
 def purchase_item(body):
@@ -50,7 +50,7 @@ def purchase_item(body):
     # )
     while count < app_config["log"]["max_retry"]:
         try:
-            producer = topic.get_sync_producer()
+            producer = TOPIC.get_sync_producer()
 
             msg = {
                 "type": "purchase",
@@ -82,7 +82,7 @@ def search_item(body):
     # logging.info(f"Returned event search status {res.status_code}")
     while count < app_config["log"]["max_retry"]:
         try:
-            producer = topic.get_sync_producer()
+            producer = TOPIC.get_sync_producer()
 
             msg = {
                 "type": "search",
