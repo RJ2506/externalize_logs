@@ -2,7 +2,7 @@ from sqlite3 import  connect
 import requests
 import connexion
 from connexion import NoContent
-
+import sqlite3
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from stats import Stats
@@ -46,12 +46,30 @@ DB_ENGINE = create_engine("sqlite:///stats.sqlite")
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
+def create_table():
+    """create the table if it doesn't exist"""
+    conn = sqlite3.connect('stats.sqlite')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE if not exists stats
+        (id INTEGER PRIMARY KEY ASC, 
+        num_buy_readings INTEGER NOT NULL,
+        num_search_readings INTEGER NOT NULL,
+        max_buy_reading INTEGER,
+        max_search_reading INTEGER,
+        min_buy_reading INTEGER,
+        min_search_reading INTEGER,
+        last_updated VARCHAR(100) NOT NULL)
+        ''')
 
+    conn.commit()
+    conn.close()
 
 def get_stats():
     """get the stats from storage application"""
     session = DB_SESSION()
     time = datetime.datetime.now()
+    create_table()
     readings = session.query(Stats).order_by(Stats.last_updated.desc()).first()
     
     if readings == None:
