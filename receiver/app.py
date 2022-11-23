@@ -31,6 +31,10 @@ logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
 
+server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
+client = KafkaClient(hosts=server)
+topic = client.topics[str.encode(app_config["events"]["topic"])]
+
 
 def purchase_item(body):
     """purchase the item you selected"""
@@ -46,9 +50,6 @@ def purchase_item(body):
     # )
     while count < app_config["log"]["max_retry"]:
         try:
-            server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
-            client = KafkaClient(hosts=server)
-            topic = client.topics[str.encode(app_config["events"]["topic"])]
             producer = topic.get_sync_producer()
 
             msg = {
@@ -81,9 +82,6 @@ def search_item(body):
     # logging.info(f"Returned event search status {res.status_code}")
     while count < app_config["log"]["max_retry"]:
         try:
-            server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
-            client = KafkaClient(hosts=server)
-            topic = client.topics[str.encode(app_config["events"]["topic"])]
             producer = topic.get_sync_producer()
 
             msg = {
@@ -99,8 +97,6 @@ def search_item(body):
             count += 1       
     return 201
     
-
-
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
